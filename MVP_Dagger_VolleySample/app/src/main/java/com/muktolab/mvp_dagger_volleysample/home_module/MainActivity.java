@@ -3,6 +3,8 @@ package com.muktolab.mvp_dagger_volleysample.home_module;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     IMainPresenter presenter;
     Toolbar toolbar;
     ProgressDialog progressDialog;
+    RecyclerView rvWeatherData;
+    MainActivityAdapter adapter;
 
 
     @Override
@@ -41,6 +45,12 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
     private void initViews(){
         presenter.setView(this,this);
+
+        rvWeatherData= (RecyclerView) findViewById(R.id.rvWeatherData);
+        rvWeatherData.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rvWeatherData.setLayoutManager(llm);
+
     }
 
 
@@ -70,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     @Override
     public void onSuccess(List<DayWiseDataEntity> dayWiseDataList) {
         if(dayWiseDataList!=null && dayWiseDataList.size()>0){
-            showToastMessage("Data Size :"+dayWiseDataList.size());
+            adapter=new MainActivityAdapter(this,dayWiseDataList);
+            rvWeatherData.setAdapter(adapter);
+
         }else{
             showToastMessage("No Data Found");
         }
